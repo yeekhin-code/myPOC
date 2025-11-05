@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Login - Government Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(217, 119, 6, 0.3);
+            border: 4px solid white;
+        }
+
+        .logo-title {
+            color: #92400e;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-subtitle {
+            color: #78350f;
+            font-size: 1.1em;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.6em;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        .card-body {
+            padding: 40px 35px;
+        }
+
+        /* Tab Navigation */
+        .login-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #fef3c7;
+            border-radius: 15px;
+            padding: 8px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 10px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #78350f;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tab-btn:hover {
+            background: #fde68a;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+        }
+
+        .tab-icon {
+            font-size: 1.5em;
+        }
+
+        /* Login Forms */
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #78350f;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #fde68a;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #fffbeb;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+            background: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+            color: #d97706;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #78350f;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Biometric Login */
+        .biometric-container {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .biometric-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 4px solid #f59e0b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .biometric-icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .biometric-icon.scanning {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 10px 40px rgba(245, 158, 11, 0.5);
+            }
+        }
+
+        .biometric-text {
+            color: #78350f;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .biometric-instruction {
+            color: #92400e;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .method-buttons {
+            display: grid;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .method-btn {
+            padding: 15px;
+            background: #fef3c7;
+            border: 2px solid #fde68a;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #78350f;
+        }
+
+        .method-btn:hover {
+            border-color: #f59e0b;
+            background: #fde68a;
+            transform: translateX(5px);
+        }
+
+        .method-icon {
+            font-size: 1.5em;
+        }
+
+        /* Links */
+        .form-links {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #fef3c7;
+        }
+
+        .form-links a {
+            color: #d97706;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: #92400e;
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #a8a29e;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #fde68a;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 0.9em;
+        }
+
+        /* Security Notice */
+        .security-notice {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .security-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .security-text {
+            font-size: 0.85em;
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #78350f;
+            font-size: 0.9em;
+        }
+
+        .login-footer a {
+            color: #d97706;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .card-body {
+                padding: 30px 25px;
+            }
+
+            .tab-btn {
+                font-size: 0.8em;
+                padding: 12px 8px;
+            }
+
+            .tab-icon {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+	    <img src="https://www.gov.bn/assets/images/logo.png" width="100" height="90" align="middle"/>
+            <!-- <div class="logo">🏛️</div -->
+            <div class="logo-title">Government Portal</div>
+            <div class="logo-subtitle">Secure Citizen Login</div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-card">
+            <div class="card-header">
+                <h2>Welcome Back</h2>
+                <p>Choose your preferred login method</p>
+            </div>
+
+            <div class="card-body">
+                <!-- Tab Navigation -->
+                <div class="login-tabs">
+                    <button class="tab-btn active" onclick="switchTab(0)">
+                        <span class="tab-icon">🆔</span>
+                        <span>Digital ID</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab(1)">
+                        <span class="tab-icon">🔑</span>
+                        <span>IC Login</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab(2)">
+                        <span class="tab-icon">👆</span>
+                        <span>Biometric</span>
+                    </button>
+                </div>
+
+                <!-- Digital ID Login -->
+                <div class="login-form active" id="form0">
+                    <form onsubmit="handleLogin(event, 'Digital ID')">
+                        <div class="form-group">
+                            <label>Digital ID Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" placeholder="Enter your Digital ID" required>
+                                <span class="input-icon">🆔</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>PIN Code</label>
+                            <div class="input-wrapper">
+                                <input type="password" placeholder="Enter 6-digit PIN" maxlength="6" required>
+                                <span class="input-icon">🔒</span>
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember1">
+                            <label for="remember1">Remember this device</label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>🚀</span>
+                            <span>Login with Digital ID</span>
+                        </button>
+                    </form>
+
+                    <div class="form-links">
+                        <a href="#" onclick="handleForgotID(event)">Forgot Digital ID?</a>
+                        <span style="margin: 0 10px; color: #d97706;">•</span>
+                        <a href="#" onclick="handleRegister(event)">Register Digital ID</a>
+                    </div>
+                </div>
+
+                <!-- IC Number + Password Login -->
+                <div class="login-form" id="form1">
+                    <form onsubmit="handleLogin(event, 'IC Number')">
+                        <div class="form-group">
+                            <label>IC Number</label>
+                            <div class="input-wrapper">
+                                <input type="text" placeholder="e.g., S1234567A" required>
+                                <span class="input-icon">🪪</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" placeholder="Enter your password" required>
+                                <span class="input-icon">🔐</span>
+                            </div>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember2">
+                            <label for="remember2">Keep me logged in</label>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>✓</span>
+                            <span>Login with IC Number</span>
+                        </button>
+                    </form>
+
+                    <div class="form-links">
+                        <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
+                        <span style="margin: 0 10px; color: #d97706;">•</span>
+                        <a href="#" onclick="handleRegister(event)">Create Account</a>
+                    </div>
+                </div>
+
+                <!-- Biometric Authentication -->
+                <div class="login-form" id="form2">
+                    <div class="biometric-container">                        
+                        <div id="biometricIcon" onclick="startBiometric()">
+                           <img src="fingerprints.png" width="120" height="120" align="middle" />
+                        </div>
+                        <div class="biometric-text" id="biometricText">
+                            Tap to authenticate
+                        </div>
+                        <div class="biometric-instruction" id="biometricInstruction">
+                            Use fingerprint or face recognition
+                        </div>
+
+                        <div class="method-buttons">
+                            <button class="method-btn" onclick="authenticateBiometric('fingerprint')">
+                                <img src="fingerprints.png" width="40" height="40" align="middle"/>
+                                <span>Fingerprint Scanner</span>
+                            </button>
+                            <button class="method-btn" onclick="authenticateBiometric('face')">
+                                <img src="face-id.png" width="40" height="40" align="middle"/>
+                                <span>Face Recognition</span>
+                            </button>
+                            <button class="method-btn" onclick="authenticateBiometric('iris')">
+                                <img src="iris.png" width="40" height="40" align="middle"/>                                
+                                <span>Iris Scan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="divider">
+                        <span>or use another method</span>
+                    </div>
+
+                    <button class="submit-btn" style="background: #fde68a; color: #78350f;" onclick="switchTab(0)">
+                        <span>🔄</span>
+                        <span>Use Digital ID/Password</span>
+                    </button>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <span class="security-icon">🔒</span>
+                    <div class="security-text">
+                        <strong>Security Notice:</strong> Your connection is encrypted and secure. We never store your biometric data on our servers. All authentication is processed locally on your device.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>Need help? <a href="#" onclick="handleHelp(event)">Contact Support</a></p>
+            <p style="margin-top: 10px; font-size: 0.85em;">© 2025 Government Portal. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            // Update tab buttons
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+
+            // Update forms
+            const forms = document.querySelectorAll('.login-form');
+            forms.forEach((form, i) => {
+                form.classList.toggle('active', i === index);
+            });
+
+            // Reset biometric state
+            if (index === 2) {
+                resetBiometric();
+            }
+        }
+
+        function handleLogin(event, method) {
+            event.preventDefault();
+            alert(`✓ Login Successful!\n\nLogged in using: ${method}\n\nRedirecting to your dashboard...`);
+            // Redirect to driving license signup page
+            window.location.href = 'driving_license_signup.html'
+        }
+
+        function startBiometric() {
+            const icon = document.getElementById('biometricIcon');
+            const text = document.getElementById('biometricText');
+            const instruction = document.getElementById('biometricInstruction');
+
+            icon.classList.add('scanning');
+            text.textContent = 'Scanning...';
+            instruction.textContent = 'Please hold still';
+
+            setTimeout(() => {
+                icon.classList.remove('scanning');
+                text.textContent = 'Authentication Failed';
+                instruction.textContent = 'Tap to try again or use a method below';
+            }, 2000);
+        }
+
+        function authenticateBiometric(method) {
+            const icon = document.getElementById('biometricIcon');
+            const text = document.getElementById('biometricText');
+            const instruction = document.getElementById('biometricInstruction');
+
+            icon.classList.add('scanning');
+            
+            let methodName = method === 'fingerprint' ? 'Fingerprint' : 
+                            method === 'face' ? 'Face Recognition' : 'Iris Scan';
+            
+            text.textContent = `Scanning ${methodName}...`;
+            instruction.textContent = 'Please wait';
+
+            setTimeout(() => {
+                alert(`✓ Authentication Successful!\n\nVerified using: ${methodName}\n\nWelcome back! Redirecting to your dashboard...`);
+                icon.classList.remove('scanning');
+                // Redirect to driving license signup page
+                window.location.href = 'driving_license_signup.html';
+            }, 2000);
+        }
+
+        function resetBiometric() {
+            const icon = document.getElementById('biometricIcon');
+            const text = document.getElementById('biometricText');
+            const instruction = document.getElementById('biometricInstruction');
+
+            icon.classList.remove('scanning');
+            text.textContent = 'Tap to authenticate';
+            instruction.textContent = 'Use fingerprint or face recognition';
+        }
+
+        function handleForgotID(event) {
+            event.preventDefault();
+            alert('🆔 Forgot Digital ID\n\nYou can recover your Digital ID by:\n• SMS verification to your registered mobile\n• Email link to your registered email\n• Visit any service center with your IC');
+        }
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            alert('🔑 Forgot Password\n\nTo reset your password:\n1. Enter your IC number\n2. Verify via SMS or email\n3. Create a new password\n\nFor security, you may be asked to answer security questions.');
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            alert('📝 Register New Account\n\nTo create a government portal account:\n• Valid IC or Passport\n• Active mobile number\n• Email address\n• Biometric registration (optional)\n\nThe registration process takes about 5 minutes.');
+        }
+
+        function handleHelp(event) {
+            event.preventDefault();
+            alert('📞 Support Center\n\nNeed assistance?\n\nPhone: +673 123 4567\nEmail: support@gov.portal.bn\nLive Chat: Available 8 AM - 8 PM\n\nOffice Hours:\nMonday-Friday: 8:00 AM - 5:00 PM\nSaturday: 9:00 AM - 1:00 PM');
+        }
+    </script>
+</body>
+</html>

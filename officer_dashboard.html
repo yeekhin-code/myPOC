@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Dashboard - License Applications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            padding: 25px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .officer-badge {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .header-title h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 40px;
+            display: flex;
+            gap: 0;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            transition: margin-right 0.4s ease;
+        }
+
+        .content-area.shifted {
+            margin-right: 450px;
+        }
+
+        /* Dashboard Card */
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 25px 30px;
+            border-bottom: 3px solid #f59e0b;
+        }
+	
+        .card-header h2 {
+            color: #92400e;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header p {
+            color: #78350f;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fef3c7;
+        }
+
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #92400e;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #fffbeb;
+        }
+
+        tbody tr.clickable:hover {
+            background: #fef3c7;
+            transform: translateX(5px);
+        }
+
+        td {
+            padding: 20px;
+            color: #374151;
+        }
+
+        .applicant-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .applicant-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .applicant-details {
+            flex: 1;
+        }
+
+        .applicant-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 3px;
+        }
+
+        .applicant-id {
+            font-size: 0.85em;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-review {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+        .status-investigate {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+        .date-text {
+            font-size: 0.9em;
+            color: #6b7280;
+        }
+
+        .action-icon {
+            font-size: 1.2em;
+            color: #f59e0b;
+            transition: transform 0.3s ease;
+        }
+
+        tbody tr.clickable:hover .action-icon {
+            transform: translateX(5px);
+        }
+
+        /* Side Panel */
+        .side-panel {
+            position: fixed;
+            right: -450px;
+            top: 0;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.2);
+            transition: right 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .side-panel.active {
+            right: 0;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            padding: 25px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .panel-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .panel-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .close-panel {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-panel:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .panel-status {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .panel-content {
+            padding: 30px 25px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #1f2937;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .alert-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            font-size: 1.5em;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 5px;
+        }
+
+        .alert-text {
+            font-size: 0.9em;
+            color: #78350f;
+        }
+
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .document-card {
+            background: #fef3c7;
+            border: 2px solid #fde68a;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .document-card:hover {
+            border-color: #f59e0b;
+            background: #fde68a;
+            transform: translateY(-3px);
+        }
+
+        .document-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .document-name {
+            font-size: 0.9em;
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-request {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+		<img src="https://www.gov.bn/assets/images/logo.png" width="100" height="90"/>
+                <!-- <div class="officer-badge">👮</div> -->
+                <div class="header-title">
+                    <h1>License Review Dashboard</h1>
+                    <p>Officer Portal - Application Management</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Under Investigation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Today's Total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="content-area" id="contentArea">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2>
+                        <span>📋</span>
+                        <span>License Applications</span>
+			<span><a href="officer_dashboard_refresh.html"><img src="refresh.png" height="15" width="15" /></a></span>
+                    </h2>
+                    <p>Click on applications marked for review or investigation to see details</p>		    
+                </div>
+		
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>License Type</th>
+                                <th>Submitted Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="clickable" onclick="openPanel(0)">
+                                <td>
+                                    <div class="applicant-info">
+                                        <div class="applicant-avatar">AH</div>
+                                        <div class="applicant-details">
+                                            <div class="applicant-name">Ahmad Hassan</div>
+                                            <div class="applicant-id">IC: S1234567A</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Class B - Private Vehicle</td>
+                                <td>
+                                    <div class="date-text">October 28, 2025</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-review">Review</span>
+                                </td>
+                                <td>
+                                    <span class="action-icon">👁️ View →</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="applicant-info">
+                                        <div class="applicant-avatar">SC</div>
+                                        <div class="applicant-details">
+                                            <div class="applicant-name">Sarah Chen</div>
+                                            <div class="applicant-id">IC: S2345678B</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Class B - Private Vehicle</td>
+                                <td>
+                                    <div class="date-text">October 27, 2025</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-approved">Approved</span>
+                                </td>
+                                <td>
+                                    <span style="color: #10b981;">✓ Completed</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="applicant-info">
+                                        <div class="applicant-avatar">LW</div>
+                                        <div class="applicant-details">
+                                            <div class="applicant-name">Lisa Wong</div>
+                                            <div class="applicant-id">IC: S4567890D</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Class C - Light Commercial</td>
+                                <td>
+                                    <div class="date-text">October 25, 2025</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-rejected">Rejected</span>
+                                </td>
+                                <td>
+                                    <span style="color: #ef4444;">✗ Closed</span>
+                                </td>
+                            </tr>
+
+                            <tr class="clickable" onclick="openPanel(2)">
+                                <td>
+                                    <div class="applicant-info">
+                                        <div class="applicant-avatar">JT</div>
+                                        <div class="applicant-details">
+                                            <div class="applicant-name">John Tan</div>
+                                            <div class="applicant-id">IC: S5678901E</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Class B - Private Vehicle</td>
+                                <td>
+                                    <div class="date-text">October 24, 2025</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-review">Review</span>
+                                </td>
+                                <td>
+                                    <span class="action-icon">👁️ View →</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="side-panel" id="sidePanel">
+            <div class="panel-header">
+                <div class="panel-header-top">
+                    <div class="panel-title" id="panelTitle">Application Details</div>
+                    <button class="close-panel" onclick="closePanel()">×</button>
+                </div>
+                <div class="panel-status" id="panelStatus">Under Review</div>
+            </div>
+
+            <div class="panel-content" id="panelContent">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay" onclick="closePanel()"></div>
+    </div>
+
+    <script>
+        const applications = [
+            {
+                name: 'Ahmad Hassan',
+                ic: 'S1234567A',
+                status: 'Review',
+                licenseType: 'Class B - Private Vehicle',
+                dob: 'March 15, 1995',
+                address: '123 Jalan Serene, Brunei Muara',
+                phone: '+673 8123456',
+                email: 'ahmad.hassan@email.com',
+                submittedDate: 'October 28, 2025',
+                testCenter: 'Downtown Testing Center',
+                previousLicense: 'No',
+                notes: 'Photo background appears slightly off-white. Requires verification.',
+                documents: ['Photo ID', 'Passport Photo', 'Proof of Residence', 'Medical Certificate']
+            },
+            {
+                name: 'Mohammed Rahman',
+                ic: 'S3456789C',
+                status: 'Investigate',
+                licenseType: 'Class B - Private Vehicle',
+                dob: 'July 22, 1988',
+                address: '456 Kampong Ayer, Brunei Muara',
+                phone: '+673 8234567',
+                email: 'mohammed.r@email.com',
+                submittedDate: 'October 26, 2025',
+                testCenter: 'North Side Testing Center',
+                previousLicense: 'Yes - Suspended',
+                notes: 'Previous license suspended for traffic violations. Requires investigation of eligibility and completion of required courses.',
+                documents: ['Photo ID', 'Passport Photo', 'Court Documents', 'Completion Certificate']
+            },
+            {
+                name: 'John Tan',
+                ic: 'S5678901E',
+                status: 'Review',
+                licenseType: 'Class B - Private Vehicle',
+                dob: 'December 5, 2002',
+                address: '789 Jalan Sultan, Brunei Muara',
+                phone: '+673 8345678',
+                email: 'john.tan@email.com',
+                submittedDate: 'October 24, 2025',
+                testCenter: 'East District Testing Center',
+                previousLicense: 'No',
+                notes: 'First-time applicant. All documents appear in order. Standard review required.',
+                documents: ['Photo ID', 'Passport Photo', 'Proof of Residence', 'Birth Certificate']
+            }
+        ];
+
+        function openPanel(index) {
+            const app = applications[index];
+            const panel = document.getElementById('sidePanel');
+            const overlay = document.getElementById('overlay');
+            const contentArea = document.getElementById('contentArea');
+
+            // Update panel content
+            document.getElementById('panelTitle').textContent = app.name;
+            document.getElementById('panelStatus').textContent = app.status === 'Review' ? 'Under Review' : 'Under Investigation';
+
+            const alertIcon = app.status === 'Investigate' ? '⚠️' : 'ℹ️';
+            const alertTitle = app.status === 'Investigate' ? 'Investigation Required' : 'Review Required';
+            const alertClass = app.status === 'Investigate' ? 'alert-box' : 'alert-box';
+
+            document.getElementById('panelContent').innerHTML = `
+                <div class="${alertClass}">
+                    <div class="alert-icon">${alertIcon}</div>
+                    <div class="alert-content">
+                        <div class="alert-title">${alertTitle}</div>
+                        <div class="alert-text">${app.notes}</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>👤</span>
+                        <span>Personal Information</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <span class="info-label">Full Name</span>
+                            <span class="info-value">${app.name}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">IC Number</span>
+                            <span class="info-value">${app.ic}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Date of Birth</span>
+                            <span class="info-value">${app.dob}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Phone</span>
+                            <span class="info-value">${app.phone}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">${app.email}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Address</span>
+                            <span class="info-value">${app.address}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>🚗</span>
+                        <span>License Details</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <span class="info-label">License Type</span>
+                            <span class="info-value">${app.licenseType}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Test Center</span>
+                            <span class="info-value">${app.testCenter}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Previous License</span>
+                            <span class="info-value">${app.previousLicense}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Submitted Date</span>
+                            <span class="info-value">${app.submittedDate}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>📎</span>
+                        <span>Uploaded Documents</span>
+                    </div>
+                    <div class="document-grid">
+                        ${app.documents.map(doc => `
+                            <div class="document-card" onclick="viewDocument('${doc}')">
+                                <div class="document-icon">📄</div>
+                                <div class="document-name">${doc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-approve" onclick="approveApplication('${app.name}')">
+                        <span>✓</span>
+                        <span>Approve Application</span>
+                    </button>
+                    <button class="btn btn-reject" onclick="rejectApplication('${app.name}')">
+                        <span>✗</span>
+                        <span>Reject</span>
+                    </button>
+                    <button class="btn btn-request" onclick="requestInfo('${app.name}')">
+                        <span>📩</span>
+                        <span>Request Info</span>
+                    </button>
+                </div>
+            `;
+
+            // Show panel
+            panel.classList.add('active');
+            overlay.classList.add('active');
+            contentArea.classList.add('shifted');
+        }
+
+        function closePanel() {
+            const panel = document.getElementById('sidePanel');
+            const overlay = document.getElementById('overlay');
+            const contentArea = document.getElementById('contentArea');
+
+            panel.classList.remove('active');
+            overlay.classList.remove('active');
+            contentArea.classList.remove('shifted');
+        }
+
+        function viewDocument(docName) {
+            alert(`Opening document: ${docName}\n\nThis would display the uploaded document in a viewer.`);
+        }
+
+        function approveApplication(name) {
+            if (confirm(`Approve license application for ${name}?`)) {
+                alert(`✓ Application Approved\n\n${name}'s license application has been approved. The applicant will be notified via email and SMS.`);
+                closePanel();
+            }
+        }
+
+        function rejectApplication(name) {
+            if (confirm(`Reject license application for ${name}?`)) {
+                const reason = prompt('Please enter reason for rejection:');
+                if (reason) {
+                    alert(`✗ Application Rejected\n\n${name}'s application has been rejected.\nReason: ${reason}\n\nThe applicant will be notified.`);
+                    closePanel();
+                }
+            }
+        }
+
+        function requestInfo(name) {
+            alert(`📩 Request Additional Information\n\nSending request to ${name} for additional documents or clarification.\n\nThe applicant will receive an email with your request.`);
+        }
+    </script>
+</body>
+</html>

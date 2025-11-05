@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eGovernment Portal - Government Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+        }
+
+        /* Header */
+        .top-bar {
+            background: #1a1a1a;
+            color: white;
+            padding: 8px 0;
+            font-size: 0.85em;
+        }
+
+        .top-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+
+        .top-bar-links a:hover {
+            color: #ffd700;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .site-title {
+            flex: 1;
+        }
+
+        .site-title h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .site-title p {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        .login-btn {
+            background: #ffd700;
+            color: #1e3a8a;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 30px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 16px 60px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        /* Shortcuts Section */
+        .shortcuts-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .shortcut-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+
+        .shortcut-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .shortcut-title {
+            font-weight: 600;
+            font-size: 1em;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        .shortcut-desc {
+            font-size: 0.85em;
+            color: #64748b;
+        }
+
+        /* Announcements Section */
+        .announcements-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .announcement-card {
+            padding: 20px;
+            border-left: 4px solid #2563eb;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            background: #eff6ff;
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1);
+        }
+
+        .announcement-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .announcement-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .announcement-card.urgent .announcement-badge {
+            background: #dc2626;
+        }
+
+        .announcement-card.important .announcement-badge {
+            background: #f59e0b;
+        }
+
+        .announcement-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .announcement-desc {
+            font-size: 0.9em;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .announcement-date {
+            font-size: 0.8em;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .announcement-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .announcement-link:hover {
+            color: #1e40af;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .footer-section a {
+            color: #d1d5db;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ffd700;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 30px auto 0;
+            padding: 20px 20px 0;
+            border-top: 1px solid #374151;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.85em;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .shortcuts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .shortcuts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .top-bar-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .top-bar-links a {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div>🌐 English | Bahasa Melayu</div>
+            <div class="top-bar-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Help</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+		<img src="https://www.gov.bn/assets/images/logo.png" width="100" height="90"/>
+                <!-- <div class="logo">🏛️</div> -->
+                <div class="site-title">
+                    <h1>eGovernment Portal</h1>
+                    <p>Your Gateway to Government Services</p>
+                </div>
+            </div>
+            <!-- <a href="#" class="login-btn" onclick="handleLogin(event)">
+                <span>🔐</span>
+                <span>Citizen Login</span>
+            </a> -->
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for services, forms, information...">
+                <button class="search-btn" onclick="performSearch()">🔍 Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+<!-- onclick="handleServiceClick(event, 'Driving License Application') -->
+    <main class="main-content">
+        <!-- Shortcuts Section -->
+        <div class="shortcuts-section">
+            <h2 class="section-title">
+                <span>⚡</span>
+                <span>Quick Services</span>
+            </h2>
+            <div class="shortcuts-grid">
+                <a href="license_info_page.html" class="shortcut-card">
+                    <!-- span class="shortcut-icon">🚗</span -->
+                    <div class="shortcut-title">Driving License</div>
+                    <div class="shortcut-desc">Apply or renew license</div>
+                </a>
+
+                <a href="#" class="shortcut-card" onclick="handleServiceClick(event, 'Road Tax')">
+                    <!-- span class="shortcut-icon">🛣️</span -->
+                    <div class="shortcut-title">Road Tax</div>
+                    <div class="shortcut-desc">Pay and renew road tax</div>
+                </a>
+
+                <a href="#" class="shortcut-card" onclick="handleServiceClick(event, 'Property Tax')">
+                    <!-- span class="shortcut-icon">🏠</span -->
+                    <div class="shortcut-title">Property Tax</div>
+                    <div class="shortcut-desc">Property tax payment</div>
+                </a>
+
+                <a href="#" class="shortcut-card" onclick="handleServiceClick(event, 'Income Tax')">
+                    <!-- span class="shortcut-icon">💰</span -->
+                    <div class="shortcut-title">Income Tax</div>
+                    <div class="shortcut-desc">File annual tax returns</div>
+                </a>
+            </div>
+
+            <!-- Additional Services -->
+            <div style="margin-top: 30px;">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px; font-size: 1.2em;">Other Services</h3>
+                <div style="display: grid; gap: 10px;">
+                    <a href="#" onclick="handleServiceClick(event, 'Birth Certificate')" style="padding: 12px; background: #f8fafc; border-radius: 8px; text-decoration: none; color: #1e3a8a; transition: all 0.3s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#f8fafc'">
+                        📄 Birth/Death Certificate
+                    </a>
+                    <a href="#" onclick="handleServiceClick(event, 'Business Registration')" style="padding: 12px; background: #f8fafc; border-radius: 8px; text-decoration: none; color: #1e3a8a; transition: all 0.3s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#f8fafc'">
+                        🏢 Business Registration
+                    </a>
+                    <a href="#" onclick="handleServiceClick(event, 'Healthcare Services')" style="padding: 12px; background: #f8fafc; border-radius: 8px; text-decoration: none; color: #1e3a8a; transition: all 0.3s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#f8fafc'">
+                        🏥 Healthcare Services
+                    </a>
+                    <a href="#" onclick="handleServiceClick(event, 'Passport Services')" style="padding: 12px; background: #f8fafc; border-radius: 8px; text-decoration: none; color: #1e3a8a; transition: all 0.3s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#f8fafc'">
+                        ✈️ Passport Services
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements Section -->
+        <div class="announcements-section">
+            <h2 class="section-title">
+                <span>📢</span>
+                <span>Latest Announcements</span>
+            </h2>
+
+            <div class="announcement-card urgent">
+                <div class="announcement-badge">🔴 URGENT</div>
+                <div class="announcement-title">Tax Filing Deadline Extended</div>
+                <div class="announcement-desc">
+                    The deadline for individual income tax filing has been extended to November 30, 2025. File your returns online to avoid penalties.
+                </div>
+                <div class="announcement-date">
+                    <span>📅</span>
+                    <span>October 28, 2025</span>
+                </div>
+                <a href="#" class="announcement-link" onclick="return false;">Read More →</a>
+            </div>
+
+            <div class="announcement-card important">
+                <div class="announcement-badge">⚠️ IMPORTANT</div>
+                <div class="announcement-title">New Digital ID System Launch</div>
+                <div class="announcement-desc">
+                    Register for the new biometric digital identity system. All citizens can now apply online or visit service centers nationwide.
+                </div>
+                <div class="announcement-date">
+                    <span>📅</span>
+                    <span>October 25, 2025</span>
+                </div>
+                <a href="#" class="announcement-link" onclick="return false;">Read More →</a>
+            </div>
+
+            <div class="announcement-card">
+                <div class="announcement-badge">ℹ️ INFO</div>
+                <div class="announcement-title">Public Holiday Schedule</div>
+                <div class="announcement-desc">
+                    Government offices will be closed November 11-12 for national celebration. Online services remain available 24/7.
+                </div>
+                <div class="announcement-date">
+                    <span>📅</span>
+                    <span>October 22, 2025</span>
+                </div>
+                <a href="#" class="announcement-link" onclick="return false;">Read More →</a>
+            </div>
+
+            <div class="announcement-card">
+                <div class="announcement-badge">💡 UPDATE</div>
+                <div class="announcement-title">Portal Maintenance Notice</div>
+                <div class="announcement-desc">
+                    Scheduled system maintenance on November 5, 2025, from 2:00 AM to 6:00 AM. Some services may be temporarily unavailable.
+                </div>
+                <div class="announcement-date">
+                    <span>📅</span>
+                    <span>October 20, 2025</span>
+                </div>
+                <a href="#" class="announcement-link" onclick="return false;">Read More →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <a href="#">About eGovernment</a>
+                <a href="#">Vision & Mission</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <a href="#">All Services A-Z</a>
+                <a href="#">Popular Services</a>
+                <a href="#">Service Standards</a>
+                <a href="#">Forms & Downloads</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <a href="#">📞 +673 123 4567</a>
+                <a href="#">📧 info@egov.bn</a>
+                <a href="#">📍 Government Building</a>
+                <a href="#">⏰ Mon-Fri: 8:00 AM - 5:00 PM</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 eGovernment Portal. All rights reserved. | Best viewed in Chrome, Firefox, Safari</p>
+        </div>
+    </footer>
+
+    <script>
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                alert(`Searching for: "${query}"\n\nSearch results would appear here in a real implementation.`);
+            } else {
+                alert('Please enter a search term.');
+            }
+        }
+
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function handleServiceClick(event, serviceName) {
+            event.preventDefault();
+            alert(`Opening ${serviceName} service...\n\nThis would redirect to the ${serviceName} application page.`);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            alert('Citizen Login\n\nThis would redirect to the secure login page where citizens can access their personal dashboard.\n\nLogin methods:\n• Digital ID\n• IC Number + Password\n• Biometric Authentication');
+        }
+    </script>
+</body>
+</html>

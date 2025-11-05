@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Verification - Officer Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-text h1 {
+            font-size: 1.3em;
+            color: white;
+            margin-bottom: 3px;
+        }
+
+        .header-text p {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.2em;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .search-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 50px 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .hint-text {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        #resultsSection {
+            display: none;
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-type {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #10b981;
+        }
+
+        .status-badge.expired {
+            background: #ef4444;
+        }
+
+        .status-badge.suspended {
+            background: #f59e0b;
+        }
+
+        .details-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .photo-upload-section {
+            margin-top: 20px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: #f8fafc;
+        }
+
+        .upload-box:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-box input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .upload-text {
+            font-size: 0.85em;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8em;
+            display: none;
+        }
+
+        .upload-box.has-photo .remove-photo {
+            display: block;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .no-results-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+
+        @media (max-width: 480px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">		
+	    <img src="https://www.gov.bn/assets/images/logo.png" width="100" height="90"/>
+            <!-- <div class="badge-icon">👮</div> -->
+            <div class="header-text">
+                <h1>Vehicle Verification</h1>
+                <p>Officer Portal - Field Inspection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Search Section -->
+        <div class="card">
+            <div class="section-title">
+                <span>🔍</span>
+                <span>Search Records</span>
+            </div>
+            <div class="search-group">
+                <label>Enter License Number</label>
+                <div class="search-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="e.g., ABC1234 or DL-2019-045678"
+                        autocomplete="off"
+                    >
+                    <button class="search-btn" onclick="performSearch()">🔍</button>
+                </div>
+                <div class="hint-text">
+                    Enter vehicle license plate (e.g., ABC1234) or driver's license number (e.g., DL-2019-045678)
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="card" id="resultsSection">
+            <div class="section-title">
+                <span>📋</span>
+                <span>Search Results</span>
+            </div>
+            <div id="resultsContent"></div>
+        </div>
+
+        <!-- Photo Upload Section -->
+        <div class="card" id="uploadSection" style="display: none;">
+            <div class="section-title">
+                <span>📷</span>
+                <span>Upload Verification Photos</span>
+            </div>
+            
+            <div class="upload-grid">
+                <div class="upload-box" id="uploadBox1" onclick="document.getElementById('photo1').click()">
+                    <input type="file" id="photo1" accept="image/*" onchange="handlePhotoUpload(1, event)">
+                    <span class="upload-icon">📸</span>
+                    <div class="upload-text">Front View</div>
+                    <button class="remove-photo" onclick="removePhoto(1, event)">×</button>
+                </div>
+
+                <div class="upload-box" id="uploadBox2" onclick="document.getElementById('photo2').click()">
+                    <input type="file" id="photo2" accept="image/*" onchange="handlePhotoUpload(2, event)">
+                    <span class="upload-icon">📸</span>
+                    <div class="upload-text">Side View</div>
+                    <button class="remove-photo" onclick="removePhoto(2, event)">×</button>
+                </div>
+
+                <div class="upload-box" id="uploadBox3" onclick="document.getElementById('photo3').click()">
+                    <input type="file" id="photo3" accept="image/*" onchange="handlePhotoUpload(3, event)">
+                    <span class="upload-icon">📸</span>
+                    <div class="upload-text">License Plate</div>
+                    <button class="remove-photo" onclick="removePhoto(3, event)">×</button>
+                </div>
+
+                <div class="upload-box" id="uploadBox4" onclick="document.getElementById('photo4').click()">
+                    <input type="file" id="photo4" accept="image/*" onchange="handlePhotoUpload(4, event)">
+                    <span class="upload-icon">📸</span>
+                    <div class="upload-text">Additional</div>
+                    <button class="remove-photo" onclick="removePhoto(4, event)">×</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="clearForm()">
+                    <span>🔄</span>
+                    <span>Clear</span>
+                </button>
+                <button class="btn btn-primary" onclick="submitVerification()">
+                    <span>✓</span>
+                    <span>Submit</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock database
+        const vehicleDatabase = {
+            'ABC1234': {
+                type: 'vehicle',
+                plate: 'ABC1234',
+                make: 'Toyota',
+                model: 'Camry',
+                year: '2020',
+                color: 'Silver',
+                owner: 'Ahmad bin Abdullah',
+                ic: 'S1234567A',
+                registration: '15/03/2020',
+                expiry: '14/03/2026',
+                roadTax: 'Valid until 14/03/2025',
+                insurance: 'Valid until 20/06/2025',
+                status: 'active'
+            },
+            'XYZ5678': {
+                type: 'vehicle',
+                plate: 'XYZ5678',
+                make: 'Honda',
+                model: 'Civic',
+                year: '2018',
+                color: 'Blue',
+                owner: 'Mohammed Rahman',
+                ic: 'S3456789C',
+                registration: '10/08/2018',
+                expiry: '09/08/2024',
+                roadTax: 'EXPIRED',
+                insurance: 'Valid until 15/12/2025',
+                status: 'expired'
+            }
+        };
+
+        const driverDatabase = {
+            'DL-2017-123456': {
+                type: 'driver',
+                license: 'DL-2017-123456',
+                name: 'Ahmad bin Abdullah',
+                ic: 'S1234567A',
+                dob: '15/03/1985',
+                address: '123 Jalan Serene, Brunei Muara',
+                class: 'Class B - Private Vehicle',
+                issued: '15/01/2019',
+                expiry: '14/01/2029',
+                points: '24/24',
+                status: 'active'
+            },
+            'DL-2019-045678': {
+                type: 'driver',
+                license: 'DL-2019-045678',
+                name: 'Sarah Chen',
+                ic: 'S7654321B',
+                dob: '22/07/1990',
+                address: '456 Kampong Ayer, Brunei Muara',
+                class: 'Class A & B',
+                issued: '10/05/2017',
+                expiry: '09/05/2027',
+                points: '18/24',
+                status: 'active'
+            }
+        };
+
+        let currentSearchType = null;
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toUpperCase();
+            
+            if (!query) {
+                alert('Please enter a license number to search.');
+                return;
+            }
+
+            // Check if it's a vehicle or driver license
+            let result = null;
+            
+            if (query.startsWith('DL-')) {
+                result = driverDatabase[query];
+                currentSearchType = 'driver';
+            } else {
+                result = vehicleDatabase[query];
+                currentSearchType = 'vehicle';
+            }
+
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsContent = document.getElementById('resultsContent');
+            const uploadSection = document.getElementById('uploadSection');
+
+            if (result) {
+                resultsSection.style.display = 'block';
+                uploadSection.style.display = 'block';
+                
+                if (result.type === 'vehicle') {
+                    displayVehicleResults(result);
+                } else {
+                    displayDriverResults(result);
+                }
+
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                resultsSection.style.display = 'block';
+                resultsContent.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">❌</div>
+                        <h3>No Records Found</h3>
+                        <p>The license number "${query}" was not found in the database.</p>
+                    </div>
+                `;
+                uploadSection.style.display = 'none';
+            }
+        }
+
+        function displayVehicleResults(vehicle) {
+            const statusClass = vehicle.status === 'active' ? 'active' : 
+                                vehicle.status === 'expired' ? 'expired' : 'suspended';
+            const statusText = vehicle.status.toUpperCase();
+
+            let alertHTML = '';
+            if (vehicle.status === 'expired') {
+                alertHTML = `
+                    <div class="alert alert-danger">
+                        <span style="font-size: 1.5em;">⚠️</span>
+                        <div>
+                            <strong>Warning:</strong> This vehicle's registration has expired. Vehicle should not be on the road.
+                        </div>
+                    </div>
+                `;
+            }
+            if (vehicle.roadTax.includes('EXPIRED')) {
+                alertHTML += `
+                    <div class="alert alert-warning">
+                        <span style="font-size: 1.5em;">⚠️</span>
+                        <div>
+                            <strong>Notice:</strong> Road tax has expired. Owner must renew immediately.
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultsContent').innerHTML = `
+                ${alertHTML}
+                <div class="result-header">
+                    <div class="result-type">🚗 Vehicle Registration</div>
+                    <div class="status-badge ${statusClass}">${statusText}</div>
+                </div>
+                <div class="details-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">License Plate</span>
+                        <span class="detail-value">${vehicle.plate}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Make & Model</span>
+                        <span class="detail-value">${vehicle.make} ${vehicle.model}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Year</span>
+                        <span class="detail-value">${vehicle.year}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Color</span>
+                        <span class="detail-value">${vehicle.color}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Registered Owner</span>
+                        <span class="detail-value">${vehicle.owner}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Owner IC</span>
+                        <span class="detail-value">${vehicle.ic}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Registration Date</span>
+                        <span class="detail-value">${vehicle.registration}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Expiry Date</span>
+                        <span class="detail-value">${vehicle.expiry}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Road Tax</span>
+                        <span class="detail-value" style="color: ${vehicle.roadTax.includes('EXPIRED') ? '#ef4444' : '#10b981'}">
+                            ${vehicle.roadTax}
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Insurance</span>
+                        <span class="detail-value">${vehicle.insurance}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayDriverResults(driver) {
+            const statusClass = driver.status === 'active' ? 'active' : 
+                                driver.status === 'suspended' ? 'suspended' : 'expired';
+            const statusText = driver.status.toUpperCase();
+
+            let alertHTML = '';
+            if (parseInt(driver.points.split('/')[0]) < 12) {
+                alertHTML = `
+                    <div class="alert alert-warning">
+                        <span style="font-size: 1.5em;">⚠️</span>
+                        <div>
+                            <strong>Notice:</strong> Driver has accumulated demerit points. Current balance: ${driver.points}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultsContent').innerHTML = `
+                ${alertHTML}
+                <div class="result-header">
+                    <div class="result-type">👤 Driver License</div>
+                    <div class="status-badge ${statusClass}">${statusText}</div>
+                </div>
+                <div class="details-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">License Number</span>
+                        <span class="detail-value">${driver.license}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Full Name</span>
+                        <span class="detail-value">${driver.name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">IC Number</span>
+                        <span class="detail-value">${driver.ic}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date of Birth</span>
+                        <span class="detail-value">${driver.dob}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Address</span>
+                        <span class="detail-value">${driver.address}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">License Class</span>
+                        <span class="detail-value">${driver.class}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Issue Date</span>
+                        <span class="detail-value">${driver.issued}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Expiry Date</span>
+                        <span class="detail-value">${driver.expiry}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Points Balance</span>
+                        <span class="detail-value" style="color: ${parseInt(driver.points.split('/')[0]) < 12 ? '#ef4444' : '#10b981'}">
+                            ${driver.points}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handlePhotoUpload(boxNumber, event) {
+            event.stopPropagation();
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const uploadBox = document.getElementById(`uploadBox${boxNumber}`);
+                uploadBox.classList.add('has-photo');
+                
+                // Create or update preview
+                let preview = uploadBox.querySelector('.photo-preview');
+                if (!preview) {
+                    preview = document.createElement('img');
+                    preview.className = 'photo-preview';
+                    uploadBox.appendChild(preview);
+                }
+                preview.src = e.target.result;
+                
+                // Hide upload icon and text
+                uploadBox.querySelector('.upload-icon').style.display = 'none';
+                uploadBox.querySelector('.upload-text').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto(boxNumber, event) {
+            event.stopPropagation();
+            const uploadBox = document.getElementById(`uploadBox${boxNumber}`);
+            const input = document.getElementById(`photo${boxNumber}`);
+            const preview = uploadBox.querySelector('.photo-preview');
+            
+            uploadBox.classList.remove('has-photo');
+            input.value = '';
+            if (preview) preview.remove();
+            
+            uploadBox.querySelector('.upload-icon').style.display = 'block';
+            uploadBox.querySelector('.upload-text').style.display = 'block';
+        }
+
+        function submitVerification() {
+            const uploadedPhotos = [];
+            for (let i = 1; i <= 4; i++) {
+                const input = document.getElementById(`photo${i}`);
+                if (input.files.length > 0) {
+                    uploadedPhotos.push(input.files[0].name);
+                }
+            }
+
+            if (uploadedPhotos.length === 0) {
+                alert('Please upload at least one photo before submitting.');
+                return;
+            }
+
+            const searchQuery = document.getElementById('searchInput').value.trim().toUpperCase();
+            
+            alert(`Verification Report Submitted!\n\nLicense: ${searchQuery}\nType: ${currentSearchType === 'vehicle' ? 'Vehicle Registration' : 'Driver License'}\nPhotos uploaded: ${uploadedPhotos.length}\n\nReport has been saved to the system.`);
+            
+            // Clear form
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'none';
+            
+            // Clear all photos
+            for (let i = 1; i <= 4; i++) {
+                const uploadBox = document.getElementById(`uploadBox${i}`);
+                const input = document.getElementById(`photo${i}`);
+                const preview = uploadBox.querySelector('.photo-preview');
+                
+                uploadBox.classList.remove('has-photo');
+                input.value = '';
+                if (preview) preview.remove();
+                
+                uploadBox.querySelector('.upload-icon').style.display = 'block';
+                uploadBox.querySelector('.upload-text').style.display = 'block';
+            }
+
+            currentSearchType = null;
+        }
+
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>
