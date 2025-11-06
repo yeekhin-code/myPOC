@@ -518,7 +518,7 @@
             // If too many dark pixels in center, face might be covered
             // If good amount of mid-tones, likely visible face
             const faceCovered = darkPercentage > 40;
-            const faceVisible = midTonePercentage > 30;
+            const faceVisible = midTonePercentage > 50;
 
             return {
                 pass: !faceCovered && faceVisible,
